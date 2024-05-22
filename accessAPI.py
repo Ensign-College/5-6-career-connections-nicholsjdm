@@ -1,20 +1,42 @@
 import requests
 import json
 
-base_url = 'https://openscriptureapi.org/api/scriptures/v1/lds/en/volume/bookofmormon/'
+def get_ch_summary():
+  base_url = 'https://openscriptureapi.org/api/scriptures/v1/lds/en/volume/bookofmormon/'
 
-response = requests.get(base_url)
-data = response.json()
+  # User input URL using variables below
+  url = f"{base_url}{book}/chapter}"
 
-# Greeting and user input
-print("This program will display a chapter summary from anywhere in the Book of Mormon!")
-book = input("Select a book from the Book of Mormon: ")
-chapter = input("Select a chapter from the book you selected: ")
+  # Call API
+  response = requests.get(url)
+  
+  # Retrieve chapter summary and return the value
+  data = response.json()
+  summary = data['chapters'][0]['summary']
+  return summary
+  
+def main():
+  # Greeting and ask user for book and chapter
+  print("Welcome to the Book of Mormon Summary Tool!")
 
-# We need to find a way to match the value with a zero-index list within a dictionary
+  # Create a while loop for multiple entries
+  while True:
+  
+    # Ask for user input
+    book = input("Select a book from the Book of Mormon: ".replace(" ", "-").lower() # Replace spaces with hyphens and convert to lowercase
+    chapter = input("Select a chapter from the book you selected: ")
 
-# This will access each book
-print(data['books']['title'][USER INPUT HERE])
+    # Call the function above and assign it a variable
+    summary = get_ch_summary(book, chapter)
 
-# This will access each chapter of the selected book and print the summary
-print(data[...
+    # Print Result
+    print(f"Summary of (book.title()} chapter {chapter}:")
+    print(summary)
+
+    # Ask user if they want to repeat
+    again = input("Would you like to view another (Y/N)? ").upper()
+    if again != 'Y':
+      print("Thank you for using the Book of Mormon Summary Tool!")
+      break
+
+main()
