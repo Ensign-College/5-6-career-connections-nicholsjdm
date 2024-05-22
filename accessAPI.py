@@ -1,19 +1,19 @@
 import requests
 import json
 
-def get_ch_summary(book, summary):
+def get_ch_summary(book, chapter):
   base_url = 'https://openscriptureapi.org/api/scriptures/v1/lds/en/volume/bookofmormon/'
-
-  # User input URL using variables below
-  url = f"{base_url}{book}/chapter}"
-
-  # Call API
+  url = f"{base_url}{book}/chapter{chapter}"
   response = requests.get(url)
-  
-  # Retrieve chapter summary and return the value
-  data = response.json()
-  summary = data['chapters'][0]['summary']
-  return summary
+
+  # Check for errors for API request
+  if response.status_code == 200:
+    data = response.json()
+    summary = data['chapters']['summary']
+    return summary
+  else:
+      print("Error")
+      return None
   
 def main():
   # Greeting and ask user for book and chapter
@@ -28,9 +28,12 @@ def main():
     # Call the function above and assign it a variable
     summary = get_ch_summary(book, chapter)
     
-    # Print Result
-    print(f"Summary of {book.title()} chapter {chapter}:")
-    print(summary)
+    # Check for error and display results
+    if summary:
+      print(f"Summary of {book.title()} chapter {chapter}:")
+      print(summary)
+    else:
+      print("No summary available.")
 
     # Ask user if they want to repeat
     again = input("Would you like to view another (Y/N)? ").upper()
